@@ -1,0 +1,29 @@
+services:
+  - type: web
+    name: top-deport
+    runtime: node
+    plan: starter
+    buildCommand: npm install
+    startCommand: npm start
+    healthCheckPath: /health
+    disk:
+      name: data
+      mountPath: /var/data
+      sizeGB: 1
+    envVars:
+      - key: NODE_VERSION
+        value: 20
+      - key: DATA_DIR
+        value: /var/data
+      - key: ADMIN_PASSWORD
+        sync: false
+      - key: WALLET_BTC
+        sync: false
+      - key: WALLET_ETH
+        sync: false
+      - key: WALLET_SOL
+        sync: false
+      - key: WALLET_USDT_TRC20
+        sync: false
+      - key: ORDER_WEBHOOK_URL
+        sync: false

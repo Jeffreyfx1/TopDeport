@@ -1,0 +1,30 @@
+{
+  "businessName": "Top Deport",
+  "tagline": "Premium flower in every size, fair prices, and staff who know their stuff.",
+  "phone": "(555) 123-4567",
+  "email": "hello@topdeport.com",
+  "taxRate": 0.0,
+  "minAge": 21,
+  "locations": [
+    {
+      "id": "main-street",
+      "name": "Main Street Dispensary",
+      "address": "123 Main St, Your City, ST 00000",
+      "phone": "(555) 123-4567",
+      "hours": "Mon-Sat 9am-9pm, Sun 10am-6pm"
+    },
+    {
+      "id": "second-location",
+      "name": "Second Location Dispensary",
+      "address": "456 Oak Ave, Another City, ST 00000",
+      "phone": "(555) 765-4321",
+      "hours": "Mon-Sat 9am-9pm, Sun 10am-6pm"
+    }
+  ],
+  "wallets": {
+    "BTC": "bc1q27ycye74kce2q3p4kv43qvpwcg2sana8pkzq9v",
+    "ETH": "0x88eFC7D22946Abe0e338745Cd18082B64d7Ca750",
+    "SOL": "BcpWP2m8yYEXmUghYbb86vmfVkkY1rATUhXiSK5DceYb",
+    "USDT_TRC20": ""
+  }
+}

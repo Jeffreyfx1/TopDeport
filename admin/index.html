@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Top Deport Admin</title><link rel="stylesheet" href="/css/styles.css">
+<style>.tabs{display:flex;gap:8px;margin:16px 0}.prod{display:grid;grid-template-columns:1.2fr 2fr auto;gap:14px;padding:14px 0;border-bottom:1px solid var(--line);align-items:start}.prod input{margin-bottom:6px}.sz{display:flex;gap:8px;align-items:center;margin-bottom:6px}.sz span{min-width:110px;font-size:.9rem}.sz input{width:110px;margin:0}@media(max-width:800px){.prod{grid-template-columns:1fr}}</style></head>
+<body><section><div class="wrap">
+<h1>Top Deport admin</h1>
+<div class="tabs"><button class="chip" id="tab-orders" aria-pressed="true">Orders</button><button class="chip" id="tab-products" aria-pressed="false">Products</button></div>
+
+<div id="orders-view">
+  <p class="meta">Refreshes every 30 seconds. After a customer pays, check the transaction ID on a block explorer, then set the status to Paid.</p>
+  <div style="overflow-x:auto"><table><thead><tr><th>Order</th><th>Time</th><th>Deliver to / Store</th><th>Customer</th><th>Items</th><th>Payment</th><th>Status</th></tr></thead><tbody id="rows"></tbody></table></div>
+</div>
+
+<div id="products-view" hidden>
+  <p class="meta">Untick "In stock" to mark a product out of stock. It shows as unavailable on the site immediately. Prices are in dollars.</p>
+  <div id="plist"></div>
+  <h2 style="margin-top:2em">Add a product</h2>
+  <form id="add-form" style="max-width:560px">
+    <div class="field"><label>Name</label><input id="n-name" required></div>
+    <div class="field"><label>Brand</label><input id="n-brand"></div>
+    <div class="field"><label>Category (flower, pre-rolls, edibles, concentrates, vapes, topicals, accessories)</label><input id="n-cat" value="flower"></div>
+    <div class="field"><label>Type (indica, sativa, hybrid)</label><input id="n-type"></div>
+    <div class="field"><label>THC (e.g. 24% THC)</label><input id="n-thc"></div>
+    <div class="field"><label>Description</label><input id="n-desc"></div>
+    <div class="field"><label>Image URL (https://...)</label><input id="n-img"></div>
+    <div class="field"><label>Sizes, one per line as: label | price  (example: 1/4 oz (7g) | 65)</label><textarea id="n-sizes" rows="5">1/8 oz (3.5g) | 35
+1/4 oz (7g) | 65
+1/2 oz (14g) | 119
+1 oz (28g) | 220</textarea></div>
+    <div id="add-msg" role="alert"></div>
+    <button class="btn" type="submit">Add product</button>
+  </form>
+</div>
+</div></section><script src="/admin/admin.js"></script></body></html>
