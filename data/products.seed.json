@@ -1,0 +1,454 @@
+[
+  {
+    "id": "blue-dream",
+    "name": "Blue Dream",
+    "brand": "Sample Farms",
+    "category": "flower",
+    "type": "sativa",
+    "thc": "24% THC",
+    "description": "Sweet berry aroma with a balanced, uplifting effect.",
+    "image": null,
+    "inStock": true,
+    "sizes": [
+      {
+        "id": "1g",
+        "label": "1g",
+        "price": 1000
+      },
+      {
+        "id": "3.5g",
+        "label": "1/8 oz (3.5g)",
+        "price": 3500,
+        "compareAt": 4200
+      },
+      {
+        "id": "7g",
+        "label": "1/4 oz (7g)",
+        "price": 6500,
+        "compareAt": 7800
+      },
+      {
+        "id": "14g",
+        "label": "1/2 oz (14g)",
+        "price": 11900
+      },
+      {
+        "id": "28g",
+        "label": "1 oz (28g)",
+        "price": 22000
+      }
+    ]
+  },
+  {
+    "id": "northern-lights",
+    "name": "Northern Lights",
+    "brand": "Sample Farms",
+    "category": "flower",
+    "type": "indica",
+    "thc": "22% THC",
+    "description": "Classic relaxing indica with earthy, sweet notes.",
+    "image": null,
+    "inStock": true,
+    "sizes": [
+      {
+        "id": "1g",
+        "label": "1g",
+        "price": 1000
+      },
+      {
+        "id": "3.5g",
+        "label": "1/8 oz (3.5g)",
+        "price": 3200
+      },
+      {
+        "id": "7g",
+        "label": "1/4 oz (7g)",
+        "price": 5900
+      },
+      {
+        "id": "14g",
+        "label": "1/2 oz (14g)",
+        "price": 10900
+      },
+      {
+        "id": "28g",
+        "label": "1 oz (28g)",
+        "price": 20200
+      }
+    ]
+  },
+  {
+    "id": "gelato-41",
+    "name": "Gelato 41",
+    "brand": "Green Hollow",
+    "category": "flower",
+    "type": "hybrid",
+    "thc": "27% THC",
+    "description": "Dense, frosty buds with creamy citrus flavor.",
+    "image": null,
+    "inStock": true,
+    "sizes": [
+      {
+        "id": "1g",
+        "label": "1g",
+        "price": 1300
+      },
+      {
+        "id": "3.5g",
+        "label": "1/8 oz (3.5g)",
+        "price": 4200,
+        "compareAt": 5000
+      },
+      {
+        "id": "7g",
+        "label": "1/4 oz (7g)",
+        "price": 7800,
+        "compareAt": 9400
+      },
+      {
+        "id": "14g",
+        "label": "1/2 oz (14g)",
+        "price": 14300
+      },
+      {
+        "id": "28g",
+        "label": "1 oz (28g)",
+        "price": 26500
+      }
+    ]
+  },
+  {
+    "id": "sour-diesel",
+    "name": "Sour Diesel",
+    "brand": "Green Hollow",
+    "category": "flower",
+    "type": "sativa",
+    "thc": "23% THC",
+    "description": "Pungent, energizing and great for daytime.",
+    "image": null,
+    "inStock": true,
+    "sizes": [
+      {
+        "id": "1g",
+        "label": "1g",
+        "price": 1100
+      },
+      {
+        "id": "3.5g",
+        "label": "1/8 oz (3.5g)",
+        "price": 3600
+      },
+      {
+        "id": "7g",
+        "label": "1/4 oz (7g)",
+        "price": 6700
+      },
+      {
+        "id": "14g",
+        "label": "1/2 oz (14g)",
+        "price": 12200
+      },
+      {
+        "id": "28g",
+        "label": "1 oz (28g)",
+        "price": 22700
+      }
+    ]
+  },
+  {
+    "id": "og-kush",
+    "name": "OG Kush",
+    "brand": "Sample Farms",
+    "category": "flower",
+    "type": "hybrid",
+    "thc": "25% THC",
+    "description": "Earthy pine with a heavy, calming finish.",
+    "image": null,
+    "inStock": true,
+    "sizes": [
+      {
+        "id": "1g",
+        "label": "1g",
+        "price": 1100
+      },
+      {
+        "id": "3.5g",
+        "label": "1/8 oz (3.5g)",
+        "price": 3800
+      },
+      {
+        "id": "7g",
+        "label": "1/4 oz (7g)",
+        "price": 7000
+      },
+      {
+        "id": "14g",
+        "label": "1/2 oz (14g)",
+        "price": 12900
+      },
+      {
+        "id": "28g",
+        "label": "1 oz (28g)",
+        "price": 23900
+      }
+    ]
+  },
+  {
+    "id": "wedding-cake",
+    "name": "Wedding Cake",
+    "brand": "Green Hollow",
+    "category": "flower",
+    "type": "hybrid",
+    "thc": "26% THC",
+    "description": "Sweet vanilla and tangy notes, smooth smoke.",
+    "image": null,
+    "inStock": true,
+    "sizes": [
+      {
+        "id": "1g",
+        "label": "1g",
+        "price": 1200
+      },
+      {
+        "id": "3.5g",
+        "label": "1/8 oz (3.5g)",
+        "price": 4000
+      },
+      {
+        "id": "7g",
+        "label": "1/4 oz (7g)",
+        "price": 7400
+      },
+      {
+        "id": "14g",
+        "label": "1/2 oz (14g)",
+        "price": 13600
+      },
+      {
+        "id": "28g",
+        "label": "1 oz (28g)",
+        "price": 25200
+      }
+    ]
+  },
+  {
+    "id": "preroll-5",
+    "name": "Classic Pre-Roll 5-Pack",
+    "brand": "Sample Farms",
+    "category": "pre-rolls",
+    "type": "hybrid",
+    "thc": "21% THC",
+    "description": "Ready to go. Smooth, even burn.",
+    "image": null,
+    "inStock": true,
+    "sizes": [
+      {
+        "id": "std",
+        "label": "5 x 0.5g",
+        "price": 2500,
+        "compareAt": 3000
+      }
+    ]
+  },
+  {
+    "id": "preroll-infused",
+    "name": "Infused Pre-Roll",
+    "brand": "Green Hollow",
+    "category": "pre-rolls",
+    "type": "indica",
+    "thc": "38% THC",
+    "description": "Rolled with kief and distillate for extra strength.",
+    "image": null,
+    "inStock": true,
+    "sizes": [
+      {
+        "id": "std",
+        "label": "1g",
+        "price": 1200
+      }
+    ]
+  },
+  {
+    "id": "gummies",
+    "name": "Mixed Berry Gummies",
+    "brand": "Cloud Nine",
+    "category": "edibles",
+    "type": "hybrid",
+    "thc": "100mg THC",
+    "description": "Fruity, fast-acting and easy to dose.",
+    "image": null,
+    "inStock": true,
+    "sizes": [
+      {
+        "id": "std",
+        "label": "10 x 10mg",
+        "price": 1800,
+        "compareAt": 2200
+      }
+    ]
+  },
+  {
+    "id": "choc-bar",
+    "name": "Dark Chocolate Bar",
+    "brand": "Cloud Nine",
+    "category": "edibles",
+    "type": "indica",
+    "thc": "100mg THC",
+    "description": "Rich 70% cocoa, break into ten even squares.",
+    "image": null,
+    "inStock": true,
+    "sizes": [
+      {
+        "id": "std",
+        "label": "10 x 10mg",
+        "price": 1500
+      }
+    ]
+  },
+  {
+    "id": "lemonade",
+    "name": "Sparkling Lemonade",
+    "brand": "Fizz Co",
+    "category": "edibles",
+    "type": "sativa",
+    "thc": "5mg THC",
+    "description": "Low-dose, refreshing, no sugar crash.",
+    "image": null,
+    "inStock": true,
+    "sizes": [
+      {
+        "id": "std",
+        "label": "1 x 5mg",
+        "price": 800
+      }
+    ]
+  },
+  {
+    "id": "badder",
+    "name": "Live Resin Badder",
+    "brand": "Resin Lab",
+    "category": "concentrates",
+    "type": "hybrid",
+    "thc": "78% THC",
+    "description": "Terpene-rich and buttery with strong flavor.",
+    "image": null,
+    "inStock": true,
+    "sizes": [
+      {
+        "id": "std",
+        "label": "1g",
+        "price": 3800,
+        "compareAt": 4500
+      }
+    ]
+  },
+  {
+    "id": "shatter",
+    "name": "Shatter",
+    "brand": "Resin Lab",
+    "category": "concentrates",
+    "type": "indica",
+    "thc": "85% THC",
+    "description": "Glass-like texture with clean, potent effects.",
+    "image": null,
+    "inStock": true,
+    "sizes": [
+      {
+        "id": "std",
+        "label": "1g",
+        "price": 2800
+      }
+    ]
+  },
+  {
+    "id": "cart",
+    "name": "Live Resin Cartridge",
+    "brand": "Vapor Peak",
+    "category": "vapes",
+    "type": "sativa",
+    "thc": "82% THC",
+    "description": "Full-spectrum flavor, 510-thread compatible.",
+    "image": null,
+    "inStock": true,
+    "sizes": [
+      {
+        "id": "std",
+        "label": "1g",
+        "price": 3000,
+        "compareAt": 3500
+      }
+    ]
+  },
+  {
+    "id": "disposable",
+    "name": "Disposable Vape",
+    "brand": "Vapor Peak",
+    "category": "vapes",
+    "type": "hybrid",
+    "thc": "80% THC",
+    "description": "Rechargeable, all-in-one, no setup.",
+    "image": null,
+    "inStock": true,
+    "sizes": [
+      {
+        "id": "std",
+        "label": "1g",
+        "price": 3500
+      }
+    ]
+  },
+  {
+    "id": "balm",
+    "name": "Relief Balm",
+    "brand": "Calm Leaf",
+    "category": "topicals",
+    "type": "",
+    "thc": "200mg CBD",
+    "description": "Non-intoxicating balm for sore muscles.",
+    "image": null,
+    "inStock": true,
+    "sizes": [
+      {
+        "id": "std",
+        "label": "1oz",
+        "price": 2200
+      }
+    ]
+  },
+  {
+    "id": "pipe",
+    "name": "Glass Hand Pipe",
+    "brand": "House Brand",
+    "category": "accessories",
+    "type": "",
+    "thc": "",
+    "description": "Durable borosilicate glass.",
+    "image": null,
+    "inStock": true,
+    "sizes": [
+      {
+        "id": "std",
+        "label": "1 pc",
+        "price": 1800
+      }
+    ]
+  },
+  {
+    "id": "papers",
+    "name": "Rolling Papers & Tips",
+    "brand": "House Brand",
+    "category": "accessories",
+    "type": "",
+    "thc": "",
+    "description": "Slow-burning papers with filter tips.",
+    "image": null,
+    "inStock": true,
+    "sizes": [
+      {
+        "id": "std",
+        "label": "1 pack",
+        "price": 400
+      }
+    ]
+  }
+]
