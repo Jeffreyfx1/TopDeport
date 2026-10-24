@@ -28,7 +28,7 @@
     },
     clear() { Cart.save([]); },
     count() { return Cart.items().reduce((n, x) => n + x.qty, 0); },
-    updateBadge() { document.querySelectorAll('.cart-count').forEach((el) => (el.textContent = Cart.count())); },
+    updateBadge() { const n = Cart.count(); document.querySelectorAll('.cart-count').forEach((el) => { el.textContent = n; el.dataset.n = n; }); },
   };
 
   let config = null;
@@ -113,10 +113,10 @@
     const link = (href, label, key) => `<a href="${href}"${page === key ? ' aria-current="page"' : ''}>${label}</a>`;
     $('#site-header').outerHTML = `<header class="site-header"><div class="wrap">
       <a class="brand" href="/">${esc(config.businessName)}</a>
-      <button class="menu-btn" aria-expanded="false" aria-controls="nav">Menu</button>
+      <button class="menu-btn" aria-expanded="false" aria-controls="nav" aria-label="Menu, cart items">Menu <span class="cart-count" data-n="0">0</span></button>
       <nav class="nav" id="nav" aria-label="Main">
         ${link('/shop', 'Shop', 'shop')}${link('/deals', 'Deals', 'deals')}${link('/locations', 'Locations', 'locations')}${link('/about', 'About', 'about')}
-        <a class="cart-link" href="/cart"${page === 'cart' ? ' aria-current="page"' : ''}>Cart <span class="cart-count">0</span></a>
+        <a class="cart-link" href="/cart"${page === 'cart' ? ' aria-current="page"' : ''}>Cart <span class="cart-count" data-n="0">0</span></a>
       </nav></div></header>`;
     const btn = $('.menu-btn');
     btn.addEventListener('click', () => {
@@ -194,7 +194,7 @@
         const data = await res.json();
         if (!res.ok) throw new Error(data.error || 'Could not submit.');
         store.del('pendingPay');
-        root.innerHTML = `<div class="alert ok"><h2>Payment submitted</h2><p>Thanks! We are confirming order <strong>${esc(d.orderId)}</strong> on the blockchain. ${d.fulfillment === 'delivery'  `Bring a valid ID to <strong>${esc(d.location)}</strong> for pickup.`}</p></div><a class="btn" href="/shop">Keep shopping</a>`;
+        root.innerHTML = `<div class="alert ok"><h2>Payment submitted</h2><p>Thanks! We are confirming order <strong>${esc(d.orderId)}</strong> on the blockchain. ${d.fulfillment === 'delivery' ? 'Have a valid ID ready for the driver.' : `Bring a valid ID to <strong>${esc(d.location)}</strong> for pickup.`}</p></div><a class="btn" href="/shop">Keep shopping</a>`;
       } catch (err) {
         msg.innerHTML = `<div class="alert error">${esc(err.message)}</div>`;
       }

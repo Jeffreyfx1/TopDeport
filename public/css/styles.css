@@ -117,3 +117,9 @@ fieldset.field{border:1px solid var(--line);border-radius:8px;padding:12px 14px}
 .pay-box{background:var(--soft);border-radius:var(--radius);padding:18px;margin:16px 0}
 .copy-row{display:flex;gap:10px;align-items:center;justify-content:space-between}
 code{background:#fff;border:1px solid var(--line);border-radius:6px;padding:8px 10px;word-break:break-all;flex:1;font-size:.95rem}
+/* Cart count on the mobile Menu button */
+.menu-btn{align-items:center;gap:6px}
+.menu-btn .cart-count{margin-left:6px}
+.cart-count[data-n="0"]{display:none}
+.menu-btn{display:none}
+@media(max-width:760px){.menu-btn{display:inline-flex}}
