@@ -8,17 +8,168 @@ const crypto = require('crypto');
 const app = express();
 const PORT = process.env.PORT || 3000;
 const APP_DATA = path.join(__dirname, 'data');
-const STORE_DIR = process.env.DATA_DIR || APP_DATA;
+const GITHUB_REPO = process.env.GITHUB_REPO || 'Jeffreyfx1/TopDeport';
+const GITHUB_BRANCH = process.env.GITHUB_BRANCH || 'main';
+const CATALOG_GIT_PATH = 'data/catalog.json';
+
+function resolveStoreDir() {
+  if (process.env.DATA_DIR) return process.env.DATA_DIR;
+  try {
+    if (fs.existsSync('/var/data') && fs.statSync('/var/data').isDirectory()) {
+      const st = fs.statSync('/var/data');
+      const parent = fs.statSync('/var');
+      if (st.dev !== parent.dev) return '/var/data';
+    }
+  } catch (e) { /* no Render disk mounted */ }
+  return APP_DATA;
+}
+
+const STORE_DIR = resolveStoreDir();
 const ORDERS_FILE = path.join(STORE_DIR, 'orders.json');
 const PRODUCTS_FILE = path.join(STORE_DIR, 'products.json');
 
 const config = JSON.parse(fs.readFileSync(path.join(APP_DATA, 'config.json'), 'utf8'));
 
-// ---------- Products (live file is editable from /admin; seeded from data/products.seed.json) ----------
-fs.mkdirSync(STORE_DIR, { recursive: true });
-if (!fs.existsSync(PRODUCTS_FILE)) fs.copyFileSync(path.join(APP_DATA, 'products.seed.json'), PRODUCTS_FILE);
-let products = JSON.parse(fs.readFileSync(PRODUCTS_FILE, 'utf8'));
-const saveProducts = () => fs.writeFileSync(PRODUCTS_FILE, JSON.stringify(products, null, 2));
+function githubToken() {
+  return String(process.env.GITHUB_TOKEN || process.env.GH_TOKEN || '').trim();
+}
+
+function storeIsDurable() {
+  try {
+    const st = fs.statSync(STORE_DIR);
+    const parent = fs.statSync(path.dirname(path.resolve(STORE_DIR)));
+    return st.dev !== parent.dev;
+  } catch (e) {
+    return false;
+  }
+}
+
+function writeJsonAtomic(file, data) {
+  fs.mkdirSync(path.dirname(file), { recursive: true });
+  const tmp = path.join(path.dirname(file), '.' + path.basename(file) + '.' + process.pid + '.tmp');
+  fs.writeFileSync(tmp, JSON.stringify(data, null, 2) + '\n');
+  fs.renameSync(tmp, file);
+}
+
+function readJsonFile(file) {
+  try {
+    const data = JSON.parse(fs.readFileSync(file, 'utf8'));
+    return data;
+  } catch (e) {
+    return null;
+  }
+}
+
+// A fresh Render instance has an empty disk. Prefer the catalog committed to
+// GitHub; never let the seed's null images wipe a link we already saved.
+function chooseProducts(hasLocal, local, seed, remote) {
+  let list;
+  if (!hasLocal && Array.isArray(remote) && remote.length) list = remote.map((p) => ({ ...p, sizes: p.sizes && p.sizes.map((s) => ({ ...s })) }));
+  else list = (hasLocal ? local : seed).map((p) => ({ ...p, sizes: p.sizes && p.sizes.map((s) => ({ ...s })) }));
+  if (hasLocal && Array.isArray(remote)) {
+    const imgs = new Map();
+    for (const r of remote) if (r && r.id && r.image) imgs.set(r.id, r.image);
+    for (const p of list) if (p && !p.image && imgs.has(p.id)) p.image = imgs.get(p.id);
+  }
+  return list;
+}
+
+async function githubCatalog() {
+  const [owner, repo] = GITHUB_REPO.split('/');
+  const url = `https://api.github.com/repos/${owner}/${repo}/contents/${CATALOG_GIT_PATH}?ref=${encodeURIComponent(GITHUB_BRANCH)}`;
+  const headers = { 'User-Agent': 'topdeport', Accept: 'application/vnd.github+json' };
+  const token = githubToken();
+  if (token) headers.Authorization = 'Bearer ' + token;
+  const r = await fetch(url, { headers, signal: AbortSignal.timeout(8000) });
+  if (r.status === 404) return null;
+  if (!r.ok) throw new Error('GitHub ' + r.status);
+  const body = await r.json();
+  if (!body || !body.content) return null;
+  const data = JSON.parse(Buffer.from(body.content, 'base64').toString('utf8'));
+  return { sha: body.sha, data };
+}
+
+async function pushCatalog() {
+  const token = githubToken();
+  if (!token) {
+    if (!storeIsDurable()) console.warn('GITHUB_TOKEN is not set. Product image links live on this instance only and will be removed when Render starts a new one.');
+    return false;
+  }
+  const [owner, repo] = GITHUB_REPO.split('/');
+  const url = `https://api.github.com/repos/${owner}/${repo}/contents/${CATALOG_GIT_PATH}`;
+  const headers = {
+    'User-Agent': 'topdeport',
+    Accept: 'application/vnd.github+json',
+    Authorization: 'Bearer ' + token,
+    'Content-Type': 'application/json',
+  };
+  const payloadFor = (sha) => {
+    const body = {
+      message: 'Save product image links',
+      content: Buffer.from(JSON.stringify(products, null, 2) + '\n').toString('base64'),
+      branch: GITHUB_BRANCH,
+    };
+    if (sha) body.sha = sha;
+    return body;
+  };
+  try {
+    let sha;
+    try {
+      const cur = await githubCatalog();
+      if (cur) sha = cur.sha;
+    } catch (e) {
+      console.error('Could not read catalog before save:', e.message);
+    }
+    let res = await fetch(url, { method: 'PUT', headers, body: JSON.stringify(payloadFor(sha)), signal: AbortSignal.timeout(12000) });
+    if (res.status === 409 || res.status === 422) {
+      const cur = await githubCatalog();
+      res = await fetch(url, { method: 'PUT', headers, body: JSON.stringify(payloadFor(cur && cur.sha)), signal: AbortSignal.timeout(12000) });
+    }
+    if (!res.ok) {
+      console.error('Catalog push failed:', res.status, (await res.text()).slice(0, 240));
+      return false;
+    }
+    return true;
+  } catch (e) {
+    console.error('Catalog push failed:', e.message);
+    return false;
+  }
+}
+
+let products = [];
+let persistChain = Promise.resolve();
+
+function saveProducts() {
+  writeJsonAtomic(PRODUCTS_FILE, products);
+  const job = persistChain.then(() => pushCatalog());
+  persistChain = job.then(() => true).catch((e) => {
+    console.error('Catalog persist failed:', e.message);
+    return false;
+  });
+  return job.then((remote) => storeIsDurable() || !!remote);
+}
+
+async function loadProducts() {
+  fs.mkdirSync(STORE_DIR, { recursive: true });
+  const local = readJsonFile(PRODUCTS_FILE);
+  const hasLocal = Array.isArray(local);
+  const seed = JSON.parse(fs.readFileSync(path.join(APP_DATA, 'products.seed.json'), 'utf8'));
+  let remote = null;
+  try {
+    const got = await githubCatalog();
+    if (got && Array.isArray(got.data)) remote = got.data;
+  } catch (e) {
+    console.error('Could not restore product image links from GitHub:', e.message);
+  }
+  if (!remote) {
+    const shipped = readJsonFile(path.join(APP_DATA, 'catalog.json'));
+    if (Array.isArray(shipped)) remote = shipped;
+  }
+  products = chooseProducts(hasLocal, local || [], seed, remote);
+  writeJsonAtomic(PRODUCTS_FILE, products);
+  const withImages = products.filter((p) => p && p.image).length;
+  console.log(`Catalog: ${products.length} products, ${withImages} image links, store ${STORE_DIR}`);
+}
 
 // ---------- Crypto ----------
 const COINS = {
@@ -258,7 +409,7 @@ function cleanSizes(arr) {
 }
 
 app.get('/admin/api/products', adminAuth, (req, res) => res.json(products));
-app.patch('/admin/api/products/:id', adminAuth, (req, res) => {
+app.patch('/admin/api/products/:id', adminAuth, async (req, res) => {
   const p = products.find((x) => x.id === req.params.id);
   if (!p) return res.status(404).json({ error: 'Not found' });
   const b = req.body || {};
@@ -274,10 +425,16 @@ app.patch('/admin/api/products/:id', adminAuth, (req, res) => {
     if (!sizes) return res.status(400).json({ error: 'Invalid sizes/prices.' });
     p.sizes = sizes;
   }
-  saveProducts();
-  res.json(p);
+  try {
+    const durable = await saveProducts();
+    res.set('X-Catalog-Durable', durable ? '1' : '0');
+    res.json(p);
+  } catch (e) {
+    console.error(e);
+    res.status(500).json({ error: 'Could not save the product.' });
+  }
 });
-app.post('/admin/api/products', adminAuth, (req, res) => {
+app.post('/admin/api/products', adminAuth, async (req, res) => {
   const b = req.body || {};
   const name = clean(b.name, 80);
   const sizes = cleanSizes(b.sizes);
@@ -290,15 +447,27 @@ app.post('/admin/api/products', adminAuth, (req, res) => {
     thc: clean(b.thc, 30), description: clean(b.description, 300), image: img, inStock: true, sizes,
   };
   products.push(p);
-  saveProducts();
-  res.status(201).json(p);
+  try {
+    const durable = await saveProducts();
+    res.set('X-Catalog-Durable', durable ? '1' : '0');
+    res.status(201).json(p);
+  } catch (e) {
+    console.error(e);
+    res.status(500).json({ error: 'Could not save the product.' });
+  }
 });
-app.delete('/admin/api/products/:id', adminAuth, (req, res) => {
+app.delete('/admin/api/products/:id', adminAuth, async (req, res) => {
   const i = products.findIndex((x) => x.id === req.params.id);
   if (i < 0) return res.status(404).json({ error: 'Not found' });
   products.splice(i, 1);
-  saveProducts();
-  res.json({ ok: true });
+  try {
+    const durable = await saveProducts();
+    res.set('X-Catalog-Durable', durable ? '1' : '0');
+    res.json({ ok: true });
+  } catch (e) {
+    console.error(e);
+    res.status(500).json({ error: 'Could not save the product.' });
+  }
 });
 app.use('/admin', adminAuth, express.static(path.join(__dirname, 'admin')));
 
@@ -306,4 +475,13 @@ app.use('/admin', adminAuth, express.static(path.join(__dirname, 'admin')));
 app.use(express.static(path.join(__dirname, 'public'), { extensions: ['html'], maxAge: '1h' }));
 app.use((req, res) => res.status(404).sendFile(path.join(__dirname, 'public', '404.html')));
 
-app.listen(PORT, () => console.log(`${config.businessName} running on port ${PORT}`));
+if (require.main === module) {
+  loadProducts().then(() => {
+    app.listen(PORT, () => console.log(`${config.businessName} running on port ${PORT}`));
+  }).catch((e) => {
+    console.error(e);
+    process.exit(1);
+  });
+}
+
+module.exports = { chooseProducts };
