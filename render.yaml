@@ -27,7 +27,3 @@ services:
         sync: false
       - key: ORDER_WEBHOOK_URL
         sync: false
-      - key: GITHUB_REPO
-        value: Jeffreyfx1/TopDeport
-      - key: GITHUB_TOKEN
-        sync: false

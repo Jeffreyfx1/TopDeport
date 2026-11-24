@@ -2,4 +2,6 @@ node_modules/
 .env
 data/orders.json
 data/products.json
+data/image-links.json
+data/rates.json
 .DS_Store

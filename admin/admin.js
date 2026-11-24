@@ -5,7 +5,6 @@
     const res = await fetch(url, { method: method || 'GET', headers: { 'Content-Type': 'application/json' }, body: body ? JSON.stringify(body) : undefined });
     const data = await res.json().catch(() => ({}));
     if (!res.ok) throw new Error(data.error || 'Request failed');
-    if (data && typeof data === 'object' && !Array.isArray(data)) data._durable = res.headers.get('X-Catalog-Durable');
     return data;
   };
   const STATUSES = ['awaiting_payment', 'payment_submitted', 'paid', 'ready', 'completed', 'cancelled'];
@@ -67,8 +66,8 @@
           price: Math.round(parseFloat($('.price', z).value) * 100),
           compareAt: Math.round(parseFloat($('.was', z).value || '0') * 100),
         }));
-        const saved = await api('/admin/api/products/' + row.dataset.id, 'PATCH', { image: $('.img', row).value, sizes });
-        st.textContent = saved._durable === '0' ? 'Saved on this instance only. Add GITHUB_TOKEN on Render or the image link is removed on the next deploy.' : 'Saved';
+        await api('/admin/api/products/' + row.dataset.id, 'PATCH', { image: $('.img', row).value, sizes });
+        st.textContent = 'Saved';
       } else if (e.target.classList.contains('del')) {
         if (!confirm('Delete this product?')) return;
         await api('/admin/api/products/' + row.dataset.id, 'DELETE');

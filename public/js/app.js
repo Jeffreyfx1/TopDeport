@@ -107,7 +107,7 @@
     }
   }, true);
 
-  // ---------- Header, footer, age gate ----------
+  // ---------- Header and footer ----------
   function renderChrome() {
     const page = document.body.dataset.page;
     const link = (href, label, key) => `<a href="${href}"${page === key ? ' aria-current="page"' : ''}>${label}</a>`;
@@ -133,21 +133,6 @@
     </div></footer>`;
     Cart.updateBadge();
     document.title = document.title.replace('{{name}}', config.businessName);
-  }
-
-  function ageGate() {
-    if (store.get('ageOk', false)) return;
-    const g = document.createElement('div');
-    g.className = 'gate';
-    g.setAttribute('role', 'dialog');
-    g.setAttribute('aria-modal', 'true');
-    g.innerHTML = `<div class="gate-box"><h2>Are you ${config.minAge} or older?</h2>
-      <p>You must be ${config.minAge}+ to view this site and to purchase cannabis products.</p>
-      <div class="actions"><button class="btn" id="age-yes">Yes, I am ${config.minAge}+</button><button class="btn ghost" id="age-no">No</button></div></div>`;
-    document.body.appendChild(g);
-    $('#age-yes').focus();
-    $('#age-yes').onclick = () => { store.set('ageOk', true); g.remove(); };
-    $('#age-no').onclick = () => { window.location.href = 'https://www.google.com'; };
   }
 
   function storeCards(root) {
@@ -328,7 +313,6 @@
           <div class="field" id="store-field" hidden><label for="locationId">Pickup store</label>${locationSelect('locationId', getLocationId())}</div>
           <div class="field"><label for="note">Notes (gate code, delivery instructions, etc.)</label><textarea id="note" rows="3" maxlength="300"></textarea></div>
           <fieldset class="field"><legend><strong>Pay with</strong></legend>${pay}</fieldset>
-          <div class="field check"><input id="age" type="checkbox"><label for="age">I am ${config.minAge} or older and will show a valid government ID at delivery or pickup.</label></div>
           <div id="msg" role="alert"></div>
           <button class="btn" id="submit" type="submit"${methods.length ? '' : ' disabled'}>Place order</button>
         </form>
@@ -360,7 +344,7 @@
             method: 'POST', headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
               fulfillment: fulfillment(), deliveryAddress: $('#addr').value, locationId: $('#locationId').value, name: $('#name').value, phone: $('#phone').value, email: $('#email').value,
-              pickupNote: $('#note').value, ageConfirmed: $('#age').checked, coin,
+              pickupNote: $('#note').value, coin,
               items: items.map((i) => ({ id: i.id, size: i.size, qty: i.qty })),
             }),
           });
@@ -388,7 +372,6 @@
       return;
     }
     renderChrome();
-    ageGate();
     const run = pages[document.body.dataset.page];
     if (run) run();
   });
