@@ -60,16 +60,19 @@ function loadProducts() {
   fs.mkdirSync(STORE_DIR, { recursive: true });
   const seed = JSON.parse(fs.readFileSync(path.join(APP_DATA, 'products.seed.json'), 'utf8'));
   const saved = readJsonFile(PRODUCTS_FILE);
-  const list = Array.isArray(saved) && saved.length ? saved : seed;
+  const list = Array.isArray(saved) && saved.length ? saved : seed.map((p) => ({ ...p }));
+  const seedImages = imageMap(seed);
   const links = readJsonFile(IMAGES_FILE) || {};
   for (const p of list) {
-    if (p && p.id && links[p.id]) p.image = links[p.id];
+    if (!p || !p.id) continue;
+    if (seedImages[p.id]) p.image = seedImages[p.id];
+    else if (links[p.id]) p.image = links[p.id];
   }
   products = list;
   writeJsonAtomic(PRODUCTS_FILE, products);
   writeJsonAtomic(IMAGES_FILE, imageMap(products));
   const withImages = products.filter((p) => p && p.image).length;
-  console.log(`Catalog: ${products.length} products, ${withImages} image links saved in ${IMAGES_FILE}`);
+  console.log(`Catalog: ${products.length} products, ${withImages} image links (hardcoded in the product file)`);
 }
 
 // ---------- Crypto ----------
